@@ -13,6 +13,7 @@
 
 import type { ICacheService } from "./cacheService";
 import type { IEntitlementRepository } from "./entitlementRepository";
+import { getPlanRank, getTopPlanKey } from "./planMatrix";
 import type {
   ConsumeResult,
   ConsumeResultFailure,
@@ -75,7 +76,7 @@ export class FeatureGateService {
       const planKey = trace.planKey ?? "FREE";
       throw new FeatureNotAvailableError(
         featureKey,
-        this.getRequiredPlan(featureKey, planKey),
+        await this.getRequiredPlan(featureKey),
         planKey,
       );
     }
@@ -346,6 +347,16 @@ export class FeatureGateService {
           planKey: sub.plan_key,
         };
       }
+      // The highest plan can access EVERY feature, even ones that are not
+      // explicitly mapped to it in the matrix (e.g. newly added features).
+      if (await this.isTopPlan(sub.plan_key)) {
+        return {
+          enabled: true,
+          limit: null, // unlimited
+          resolvedVia: "plan",
+          planKey: sub.plan_key,
+        };
+      }
     }
 
     // Step 4: Fallback
@@ -394,6 +405,7 @@ export class FeatureGateService {
   private async buildEntitlementCache(orgId: string): Promise<EntitlementCache> {
     const sub = await this.repo.getActiveSubscription(orgId);
     const planKey = sub?.plan_key ?? "FREE";
+    const isTop = await this.isTopPlan(planKey);
     const planFeatures = await this.repo.getPlanFeatures(planKey);
     const allFeatures = await this.repo.listFeatures(1, 1000);
     const now = new Date();
@@ -425,13 +437,18 @@ export class FeatureGateService {
 
       types[feat.key] = feat.type;
 
+      // Unmapped features: the top plan gets them enabled + unlimited,
+      // every other plan gets them disabled.
+      const defaultEnabled = isTop;
+      const defaultLimit: number | null = null;
+
       if (feat.type === "boolean" || feat.type === "experiment") {
-        features[feat.key] = ov?.enabled ?? pf?.enabled ?? false;
+        features[feat.key] = ov?.enabled ?? pf?.enabled ?? defaultEnabled;
         limits[feat.key] = null;
       } else {
         // limit type
-        features[feat.key] = ov?.enabled ?? pf?.enabled ?? false;
-        limits[feat.key] = ov?.limit_value ?? pf?.limit_value ?? null;
+        features[feat.key] = ov?.enabled ?? pf?.enabled ?? defaultEnabled;
+        limits[feat.key] = ov?.limit_value ?? pf?.limit_value ?? defaultLimit;
       }
 
       configs[feat.key] = pf?.config_json ?? feat.default_config ?? null;
@@ -475,9 +492,32 @@ export class FeatureGateService {
     return { periodStart, periodEnd };
   }
 
-  private getRequiredPlan(_featureKey: string, currentPlanKey: string): string {
-    // Walk through plans to find which plan enables this feature
-    // This is a simplified version — in production you'd cache this
-    return currentPlanKey === "FREE" ? "PRO" : currentPlanKey;
+  /**
+   * Whether the given plan key is the highest-ranked plan. The top plan can
+   * access every feature (see resolveFeature / buildEntitlementCache).
+   */
+  private async isTopPlan(planKey: string): Promise<boolean> {
+    const plans = await this.repo.getAllActivePlans();
+    if (plans.length === 0) return false;
+    const top = plans.reduce((a, b) => (getPlanRank(b.key) > getPlanRank(a.key) ? b : a));
+    return top.key === planKey;
+  }
+
+  /**
+   * Find the cheapest plan that enables this feature, walking plans from
+   * lowest to highest rank. Used for the 403 error message so users know
+   * which plan unlocks the feature. Falls back to the top plan key.
+   */
+  private async getRequiredPlan(featureKey: string): Promise<string> {
+    const plans = await this.repo.getAllActivePlans();
+    const ranked = plans.sort((a, b) => getPlanRank(a.key) - getPlanRank(b.key));
+
+    for (const plan of ranked) {
+      const planFeatures = await this.repo.getPlanFeatures(plan.key);
+      const pf = planFeatures.find((f) => f.feature_key === featureKey);
+      if (pf?.enabled) return plan.key;
+    }
+
+    return getTopPlanKey();
   }
 }

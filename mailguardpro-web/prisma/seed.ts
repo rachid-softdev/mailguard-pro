@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 import pg from "pg";
+import { FEATURES, PLANS, PLAN_FEATURE_MAP } from "../services/feature-flags/planMatrix";
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -32,86 +33,13 @@ async function main() {
 
   // ================================================================
   // Feature Flags + Entitlements Seed
+  // NOTE: Plans, features and their mappings come from the shared
+  // plan matrix (services/feature-flags/planMatrix.ts) so the seed
+  // and the runtime feature gates can never drift apart.
   // ================================================================
 
-  // Create features
-  const features = [
-    {
-      key: "EXPORT_PDF",
-      description: "Export emails to PDF",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "AI_SUMMARY",
-      description: "AI-powered email summary",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "BULK_VALIDATE",
-      description: "Bulk email validation credits",
-      type: "LIMIT" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "API_ACCESS",
-      description: "REST API access",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "TEAM_MEMBERS",
-      description: "Number of team members",
-      type: "LIMIT" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "CUSTOM_HEADERS",
-      description: "Custom email headers",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "WEBHOOKS",
-      description: "Webhook integrations",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "SCHEDULED_EXPORTS",
-      description: "Scheduled automated exports",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "NEW_DASHBOARD",
-      description: "New dashboard experience (A/B test)",
-      type: "EXPERIMENT" as const,
-      defaultConfig: { percentage: 50, seed: "NEW_DASHBOARD_v1" },
-    },
-    {
-      key: "ADVANCED_FILTERS",
-      description: "Advanced filter operators",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "WHITELABEL",
-      description: "White-label exports",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-    {
-      key: "PRIORITY_SUPPORT",
-      description: "Priority customer support",
-      type: "BOOLEAN" as const,
-      defaultConfig: {},
-    },
-  ];
-
   console.log("Seeding features...");
-  for (const f of features) {
+  for (const f of FEATURES) {
     await prisma.feature.upsert({
       where: { key: f.key },
       update: { description: f.description, type: f.type, defaultConfig: f.defaultConfig },
@@ -123,30 +51,19 @@ async function main() {
       },
     });
   }
-  console.log(`  ✓ ${features.length} features seeded`);
+  console.log(`  ✓ ${FEATURES.length} features seeded`);
 
-  // Create pricing plans
-  const plans = [
-    { key: "FREE", name: "Free", priceMonthly: 0, stripePriceId: null },
-    {
-      key: "STARTER",
-      name: "Starter",
-      priceMonthly: 1900,
-      stripePriceId: process.env.STRIPE_STARTER_PRICE_ID ?? null,
-    },
-    {
-      key: "PRO",
-      name: "Professional",
-      priceMonthly: 2900,
-      stripePriceId: process.env.STRIPE_PRO_PRICE_ID ?? null,
-    },
-    {
-      key: "BUSINESS",
-      name: "Business",
-      priceMonthly: 9900,
-      stripePriceId: process.env.STRIPE_BUSINESS_PRICE_ID ?? null,
-    },
-  ];
+  const plans = PLANS.map((p) => ({
+    ...p,
+    stripePriceId:
+      p.key === "STARTER"
+        ? (process.env.STRIPE_STARTER_PRICE_ID ?? null)
+        : p.key === "PRO"
+          ? (process.env.STRIPE_PRO_PRICE_ID ?? null)
+          : p.key === "BUSINESS"
+            ? (process.env.STRIPE_BUSINESS_PRICE_ID ?? null)
+            : null,
+  }));
 
   console.log("Seeding plans...");
   for (const p of plans) {
@@ -163,72 +80,9 @@ async function main() {
   }
   console.log(`  ✓ ${plans.length} plans seeded`);
 
-  // Map features to plans
-  const planFeatureMap: Record<
-    string,
-    Array<{ key: string; enabled: boolean; limit?: number | null; strategy?: string }>
-  > = {
-    FREE: [
-      { key: "EXPORT_PDF", enabled: false },
-      { key: "AI_SUMMARY", enabled: false },
-      { key: "BULK_VALIDATE", enabled: true, limit: 3 },
-      { key: "API_ACCESS", enabled: false },
-      { key: "TEAM_MEMBERS", enabled: true, limit: 1 },
-      { key: "CUSTOM_HEADERS", enabled: false },
-      { key: "WEBHOOKS", enabled: false },
-      { key: "SCHEDULED_EXPORTS", enabled: false },
-      { key: "NEW_DASHBOARD", enabled: true },
-      { key: "ADVANCED_FILTERS", enabled: false },
-      { key: "WHITELABEL", enabled: false },
-      { key: "PRIORITY_SUPPORT", enabled: false },
-    ],
-    STARTER: [
-      { key: "EXPORT_PDF", enabled: true },
-      { key: "AI_SUMMARY", enabled: false },
-      { key: "BULK_VALIDATE", enabled: true, limit: 5000 },
-      { key: "API_ACCESS", enabled: true },
-      { key: "TEAM_MEMBERS", enabled: true, limit: 3 },
-      { key: "CUSTOM_HEADERS", enabled: false },
-      { key: "WEBHOOKS", enabled: true },
-      { key: "SCHEDULED_EXPORTS", enabled: false },
-      { key: "NEW_DASHBOARD", enabled: true },
-      { key: "ADVANCED_FILTERS", enabled: false },
-      { key: "WHITELABEL", enabled: false },
-      { key: "PRIORITY_SUPPORT", enabled: false },
-    ],
-    PRO: [
-      { key: "EXPORT_PDF", enabled: true },
-      { key: "AI_SUMMARY", enabled: true },
-      { key: "BULK_VALIDATE", enabled: true, limit: 50000 },
-      { key: "API_ACCESS", enabled: true },
-      { key: "TEAM_MEMBERS", enabled: true, limit: 10 },
-      { key: "CUSTOM_HEADERS", enabled: true },
-      { key: "WEBHOOKS", enabled: true },
-      { key: "SCHEDULED_EXPORTS", enabled: true },
-      { key: "NEW_DASHBOARD", enabled: true },
-      { key: "ADVANCED_FILTERS", enabled: true },
-      { key: "WHITELABEL", enabled: false },
-      { key: "PRIORITY_SUPPORT", enabled: false },
-    ],
-    BUSINESS: [
-      { key: "EXPORT_PDF", enabled: true },
-      { key: "AI_SUMMARY", enabled: true },
-      { key: "BULK_VALIDATE", enabled: true, limit: null }, // unlimited
-      { key: "API_ACCESS", enabled: true },
-      { key: "TEAM_MEMBERS", enabled: true, limit: null }, // unlimited
-      { key: "CUSTOM_HEADERS", enabled: true },
-      { key: "WEBHOOKS", enabled: true },
-      { key: "SCHEDULED_EXPORTS", enabled: true },
-      { key: "NEW_DASHBOARD", enabled: true },
-      { key: "ADVANCED_FILTERS", enabled: true },
-      { key: "WHITELABEL", enabled: true },
-      { key: "PRIORITY_SUPPORT", enabled: true },
-    ],
-  };
-
   console.log("Seeding plan-feature mappings...");
   let mappingCount = 0;
-  for (const [planKey, featureMappings] of Object.entries(planFeatureMap)) {
+  for (const [planKey, featureMappings] of Object.entries(PLAN_FEATURE_MAP)) {
     const plan = await prisma.pricingPlan.findUnique({ where: { key: planKey } });
     if (!plan) {
       console.warn(`  ⚠ Plan ${planKey} not found, skipping`);
