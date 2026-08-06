@@ -406,7 +406,8 @@ export default function BulkPage() {
                             setPollingJobId(null);
                             setTimeout(() => setPollingJobId(job.id), 0);
                           }}
-                          variant="ghost" size="sm"
+                          variant="ghost"
+                          size="sm"
                         >
                           Refresh
                         </Button>

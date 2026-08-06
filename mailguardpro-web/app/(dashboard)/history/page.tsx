@@ -446,7 +446,9 @@ export default function HistoryPage() {
                 <Button
                   onClick={() => setExportOpen((prev) => !prev)}
                   disabled={exportLoading}
-                  variant="ghost" size="sm" className="gap-1.5"
+                  variant="ghost"
+                  size="sm"
+                  className="gap-1.5"
                   aria-haspopup="menu"
                   aria-expanded={exportOpen}
                   aria-controls="export-menu"
@@ -636,14 +638,18 @@ export default function HistoryPage() {
                   </button>
                   <Button
                     onClick={() => handleBatchExport()}
-                    variant="ghost" size="sm" className="gap-1.5"
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Export
                   </Button>
                   <Button
                     onClick={() => setConfirmDelete(true)}
-                    variant="ghost" size="sm" className="gap-1.5 text-[var(--status-invalid)]"
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5 text-[var(--status-invalid)]"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     Delete
@@ -651,7 +657,8 @@ export default function HistoryPage() {
                   <Button
                     onClick={() => setConfirmRevalidate(true)}
                     disabled={batchValidating}
-                    variant="accent" size="sm"
+                    variant="accent"
+                    size="sm"
                   >
                     {batchValidating ? (
                       <>
@@ -752,7 +759,8 @@ export default function HistoryPage() {
                           onClick={() =>
                             router.push(`/validate?email=${encodeURIComponent(validation.email)}`)
                           }
-                          variant="ghost" size="sm"
+                          variant="ghost"
+                          size="sm"
                         >
                           Revalidate
                         </Button>
@@ -775,7 +783,9 @@ export default function HistoryPage() {
                   <Button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={pagination.page <= 1}
-                    variant="ghost" size="sm" className="disabled:opacity-40 disabled:cursor-not-allowed"
+                    variant="ghost"
+                    size="sm"
+                    className="disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Previous
                   </Button>
@@ -785,7 +795,9 @@ export default function HistoryPage() {
                   <Button
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={pagination.page >= pagination.totalPages}
-                    variant="ghost" size="sm" className="disabled:opacity-40 disabled:cursor-not-allowed"
+                    variant="ghost"
+                    size="sm"
+                    className="disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Next
                   </Button>
@@ -844,7 +856,9 @@ export default function HistoryPage() {
                 <Button
                   onClick={() => handleDeleteSchedule(schedule.id)}
                   disabled={deletingSchedule === schedule.id}
-                  variant="ghost" size="sm" className="text-[var(--status-invalid)] hover:bg-[var(--status-invalid)]/10"
+                  variant="ghost"
+                  size="sm"
+                  className="text-[var(--status-invalid)] hover:bg-[var(--status-invalid)]/10"
                   aria-label="Delete scheduled export"
                 >
                   {deletingSchedule === schedule.id ? (
@@ -881,7 +895,8 @@ export default function HistoryPage() {
           <Button
             onClick={handleBatchRevalidate}
             disabled={batchValidating}
-            variant="accent" size="sm"
+            variant="accent"
+            size="sm"
           >
             Revalidate ({selection.count})
           </Button>
@@ -903,11 +918,7 @@ export default function HistoryPage() {
           <Button onClick={() => setConfirmDelete(false)} variant="secondary" size="sm">
             Cancel
           </Button>
-          <Button
-            onClick={handleBatchDelete}
-            disabled={deleteLoading}
-            variant="danger" size="sm"
-          >
+          <Button onClick={handleBatchDelete} disabled={deleteLoading} variant="danger" size="sm">
             {deleteLoading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

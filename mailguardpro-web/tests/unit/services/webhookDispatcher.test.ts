@@ -220,6 +220,7 @@ describe("webhookDispatcher", () => {
         where: {
           userId: "user-123",
           isActive: true,
+          deletedAt: null,
           events: { has: "bulk_job_completed" },
         },
       });

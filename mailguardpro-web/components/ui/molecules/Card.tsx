@@ -69,7 +69,10 @@ export const CardTitle = memo(
     return (
       <h3
         ref={ref}
-        className={cn("font-sans font-semibold text-lg tracking-tight text-[var(--text-primary)]", className)}
+        className={cn(
+          "font-sans font-semibold text-lg tracking-tight text-[var(--text-primary)]",
+          className,
+        )}
         {...props}
       >
         {children}

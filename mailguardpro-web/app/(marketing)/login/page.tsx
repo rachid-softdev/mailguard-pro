@@ -93,7 +93,12 @@ export default function LoginPage() {
           )}
 
           {/* Google */}
-          <Button onClick={handleGoogle} disabled={!!loading} variant="secondary" className="w-full">
+          <Button
+            onClick={handleGoogle}
+            disabled={!!loading}
+            variant="secondary"
+            className="w-full"
+          >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
                 fill="currentColor"

@@ -274,7 +274,11 @@ export default function SettingsPage() {
 
       {/* Danger Tab */}
       {activeTab === "danger" && (
-        <Card variant="default" padding="md" className="animate-fade-slide-up max-w-2xl border-[var(--status-invalid)]">
+        <Card
+          variant="default"
+          padding="md"
+          className="animate-fade-slide-up max-w-2xl border-[var(--status-invalid)]"
+        >
           <h2 className="text-lg font-display font-semibold mb-6 text-[var(--status-invalid)]">
             Danger Zone
           </h2>
