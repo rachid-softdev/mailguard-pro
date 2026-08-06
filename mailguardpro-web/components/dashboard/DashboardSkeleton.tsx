@@ -17,7 +17,12 @@ export function DashboardSkeleton() {
       {/* Trend cards skeleton */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i} variant="default" padding="md" className="animate-pulse flex items-center gap-4">
+          <Card
+            key={i}
+            variant="default"
+            padding="md"
+            className="animate-pulse flex items-center gap-4"
+          >
             <div className="p-2 rounded-lg bg-[var(--bg-subtle)]">
               <div className="w-5 h-5" />
             </div>

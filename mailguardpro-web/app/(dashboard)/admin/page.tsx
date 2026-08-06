@@ -93,7 +93,12 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, accentColor = "var(--accent)" }: StatCardProps) {
   return (
-    <Card variant="default" padding="md" className="border-t-2" style={{ borderTopColor: accentColor }}>
+    <Card
+      variant="default"
+      padding="md"
+      className="border-t-2"
+      style={{ borderTopColor: accentColor }}
+    >
       <div className="flex items-start justify-between mb-1">
         <p className="text-xs text-[var(--text-muted)] uppercase ">{label}</p>
         <span className="text-[var(--text-muted)]" aria-hidden="true">
@@ -383,8 +388,8 @@ export default function AdminPage() {
       </div>
 
       {/* Recent Users */}
-        <Card variant="default" padding="md">
-          <h2 className="text-lg font-display font-semibold mb-4">Recent Users</h2>
+      <Card variant="default" padding="md">
+        <h2 className="text-lg font-display font-semibold mb-4">Recent Users</h2>
         {stats.recentUsers.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">

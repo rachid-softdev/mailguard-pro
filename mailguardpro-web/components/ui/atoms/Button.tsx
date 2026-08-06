@@ -31,8 +31,7 @@ const variantStyles: Record<ButtonVariant, string> = {
     "bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)]",
   ghost:
     "bg-transparent text-[var(--text-primary)] border-[var(--border)] hover:bg-[var(--bg-subtle)]",
-  danger:
-    "bg-[var(--status-invalid)] text-white hover:opacity-90 hover:-translate-y-0.5",
+  danger: "bg-[var(--status-invalid)] text-white hover:opacity-90 hover:-translate-y-0.5",
   link: "bg-transparent text-[var(--accent)] underline-offset-4 hover:underline border-0 p-0 h-auto",
 };
 
@@ -45,7 +44,12 @@ const sizeStyles: Record<ButtonSize, string> = {
 
 function Spinner({ className }: { className?: string }) {
   return (
-    <svg className={cn("animate-spin", className)} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg
+      className={cn("animate-spin", className)}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
       <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
     </svg>

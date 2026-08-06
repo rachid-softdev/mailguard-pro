@@ -62,10 +62,7 @@ export class ErrorBoundary extends Component<Props, State> {
               {this.state.error?.message || "An unexpected error occurred"}
             </p>
             <div className="flex gap-3 justify-center">
-              <Button
-                variant="primary"
-                onClick={() => (window.location.href = "/dashboard")}
-              >
+              <Button variant="primary" onClick={() => (window.location.href = "/dashboard")}>
                 Go to Dashboard
               </Button>
               <Button variant="ghost" onClick={() => this.setState({ hasError: false })}>

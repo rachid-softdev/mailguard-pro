@@ -235,7 +235,8 @@ export default function WebhooksPage() {
           </p>
         </div>
         <Button
-          variant="primary" className="self-start sm:self-auto"
+          variant="primary"
+          className="self-start sm:self-auto"
           onClick={() => setShowCreateModal(true)}
           aria-haspopup="dialog"
           aria-expanded={showCreateModal}
@@ -328,7 +329,8 @@ export default function WebhooksPage() {
                 <div className="flex items-center gap-2 ml-4">
                   <Button
                     onClick={() => handleTestWebhook(webhook)}
-                    variant="ghost" size="sm"
+                    variant="ghost"
+                    size="sm"
                     aria-haspopup="dialog"
                     aria-expanded={showTestModal && testWebhook?.id === webhook.id}
                     aria-controls="modal-test-webhook"
@@ -337,13 +339,16 @@ export default function WebhooksPage() {
                   </Button>
                   <Button
                     onClick={() => toggleWebhook(webhook.id, webhook.isActive)}
-                    variant="ghost" size="sm"
+                    variant="ghost"
+                    size="sm"
                   >
                     {webhook.isActive ? "Disable" : "Enable"}
                   </Button>
                   <Button
                     onClick={() => deleteWebhook(webhook)}
-                    variant="ghost" size="sm" className="text-[var(--status-invalid)]"
+                    variant="ghost"
+                    size="sm"
+                    className="text-[var(--status-invalid)]"
                   >
                     Delete
                   </Button>
@@ -433,7 +438,8 @@ export default function WebhooksPage() {
 
         <div className="flex gap-3 mt-6">
           <Button
-            variant="ghost" className="flex-1"
+            variant="ghost"
+            className="flex-1"
             onClick={() => {
               setShowCreateModal(false);
               resetForm();
@@ -442,7 +448,8 @@ export default function WebhooksPage() {
             Cancel
           </Button>
           <Button
-            variant="primary" className="flex-1"
+            variant="primary"
+            className="flex-1"
             onClick={createWebhook}
             disabled={creating || !formUrl || !formName || formEvents.length === 0}
           >
@@ -487,7 +494,8 @@ export default function WebhooksPage() {
             ) : null}
 
             <Button
-              variant="primary" className="w-full mt-4"
+              variant="primary"
+              className="w-full mt-4"
               onClick={() => {
                 setShowTestModal(false);
                 setTestWebhook(null);
@@ -515,7 +523,8 @@ export default function WebhooksPage() {
             Cancel
           </Button>
           <Button
-            variant="ghost" className="flex-1 text-[var(--status-invalid)]"
+            variant="ghost"
+            className="flex-1 text-[var(--status-invalid)]"
             onClick={handleDeleteConfirm}
           >
             Delete

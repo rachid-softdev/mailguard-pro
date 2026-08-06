@@ -14,13 +14,7 @@
 import { describe, expect, it } from "vitest";
 import type { ICacheService } from "../cacheService";
 import { FeatureGateService } from "../featureGateService";
-import {
-  FEATURES,
-  getPlanRank,
-  getTopPlanKey,
-  PLANS,
-  PLAN_FEATURE_MAP,
-} from "../planMatrix";
+import { FEATURES, getPlanRank, getTopPlanKey, PLANS, PLAN_FEATURE_MAP } from "../planMatrix";
 import { FeatureNotAvailableError } from "../types";
 import { MockEntitlementRepository } from "./mockRepository";
 
@@ -54,7 +48,11 @@ function createMatrixFixture() {
 
   // Features (from shared matrix)
   for (const f of FEATURES) {
-    repo.addFeature(f.key, f.type.toLowerCase() as "boolean" | "limit" | "experiment", f.description);
+    repo.addFeature(
+      f.key,
+      f.type.toLowerCase() as "boolean" | "limit" | "experiment",
+      f.description,
+    );
   }
 
   // Plan → feature mappings (from shared matrix)
@@ -118,10 +116,9 @@ describe("plan matrix — hasFeature per plan", () => {
         const mapping = PLAN_FEATURE_MAP[plan.key].find((m) => m.key === f.key);
         const expected = mapping?.enabled ?? false;
         const actual = await gate.hasFeature(orgId, f.key);
-        expect(
-          actual,
-          `${plan.key} → ${f.key}: expected ${expected}, got ${actual}`,
-        ).toBe(expected);
+        expect(actual, `${plan.key} → ${f.key}: expected ${expected}, got ${actual}`).toBe(
+          expected,
+        );
       }
     }
   });
@@ -174,11 +171,15 @@ describe("plan matrix — assertFeature enforcement", () => {
         const enabled = mapping?.enabled ?? false;
 
         if (enabled) {
-          await expect(gate.assertFeature(orgId, f.key), `${plan.key} should allow ${f.key}`)
-            .resolves.toBeUndefined();
+          await expect(
+            gate.assertFeature(orgId, f.key),
+            `${plan.key} should allow ${f.key}`,
+          ).resolves.toBeUndefined();
         } else {
-          await expect(gate.assertFeature(orgId, f.key), `${plan.key} should block ${f.key}`)
-            .rejects.toThrow(FeatureNotAvailableError);
+          await expect(
+            gate.assertFeature(orgId, f.key),
+            `${plan.key} should block ${f.key}`,
+          ).rejects.toThrow(FeatureNotAvailableError);
         }
       }
     }
