@@ -41,21 +41,22 @@ export function VariantB() {
                 View pricing
               </Button>
             </div>
-            {/* Social proof bar */}
+            {/* Trust bar */}
             <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[var(--text-muted)]">
-              <div className="flex -space-x-1">
-                {["SK", "MJ", "AL", "RP"].map((initials, i) => (
-                  <div
-                    key={i}
-                    className="w-7 h-7 rounded-full border-2 border-[var(--bg-base)] bg-[var(--accent-light)] flex items-center justify-center text-[10px] font-bold text-[var(--accent)]"
-                  >
-                    {initials}
-                  </div>
-                ))}
-              </div>
-              <span>
-                Trusted by <strong className="text-[var(--text-primary)]">500+</strong> teams
-              </span>
+              <svg
+                className="w-4 h-4 text-[var(--accent)]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Free to start &middot; No credit card &middot; Cancel anytime</span>
             </div>
           </div>
 
@@ -279,62 +280,63 @@ export function VariantB() {
         </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Why validate */}
       <section className="py-20 border-t border-[var(--border)]">
         <div className="max-w-[var(--container-lg)] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-5xl font-display font-bold text-[var(--accent)] mb-2">500+</div>
+            <h2 className="text-3xl font-display font-bold mb-3">Why validate emails?</h2>
             <p className="text-lg text-[var(--text-secondary)]">
-              developers trust MailGuard Pro for email validation
+              Two common situations where a 0&ndash;100 quality score makes a difference.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            <Card variant="default">
-              <svg
-                className="w-6 h-6 text-[var(--accent)] mb-3"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
-              </svg>
-              <p className="text-sm text-[var(--text-secondary)] mb-4 leading-relaxed">
-                &ldquo;We reduced our bounce rate by 40% after switching to MailGuard Pro. The
-                quality score alone is worth it — it catches emails that other validators
-                miss.&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-[var(--accent-light)] rounded-full flex items-center justify-center text-sm font-bold text-[var(--accent)]">
-                  SK
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Sarah Kim</p>
-                  <p className="text-xs text-[var(--text-muted)]">CTO, SendFlow</p>
-                </div>
+<Card variant="default">
+              <div className="w-12 h-12 bg-[var(--accent-light)] rounded-lg mb-4 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-[var(--accent)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
               </div>
+              <h3 className="text-lg font-display font-semibold mb-2">
+                Clean your list before you send
+              </h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                High bounce rates hurt your sender reputation and inbox placement. Score every
+                address before a campaign to keep risky, undeliverable emails out of your sends.
+              </p>
             </Card>
             <Card variant="default">
-              <svg
-                className="w-6 h-6 text-[var(--accent)] mb-3"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
-              </svg>
-              <p className="text-sm text-[var(--text-secondary)] mb-4 leading-relaxed">
-                &ldquo;Processing 50k emails in minutes with detailed reports is incredible. The
-                export options alone save our team hours every week.&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-[var(--accent-light)] rounded-full flex items-center justify-center text-sm font-bold text-[var(--accent)]">
-                  MJ
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Marcus Johnson</p>
-                  <p className="text-xs text-[var(--text-muted)]">
-                    Email Marketing Lead, OutreachPro
-                  </p>
-                </div>
+              <div className="w-12 h-12 bg-[var(--accent-light)] rounded-lg mb-4 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-[var(--accent)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </div>
+              <h3 className="text-lg font-display font-semibold mb-2">
+                Stop fake signups at the source
+              </h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                Validate addresses in real time during signup to catch disposable and mistyped
+                emails before they pollute your list &mdash; and your stats.
+              </p>
             </Card>
           </div>
         </div>
