@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import EmailDemo from "@/components/marketing/EmailDemo";
+import { Badge, Button, Card, SectionHeader } from "@/components/ui";
 import { ScoreCircle } from "@/components/validator/ScoreCircle";
-import { Button, Card, Badge, SectionHeader } from "@/components/ui";
 
 const ArrowIcon = (
   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -308,7 +308,6 @@ export function VariantA() {
                 emails before they pollute your list &mdash; and your stats.
               </p>
             </Card>
-          </div>
           </div>
         </div>
       </section>
